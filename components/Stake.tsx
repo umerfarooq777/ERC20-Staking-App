@@ -19,6 +19,7 @@ import {
 } from "@thirdweb-dev/react";
 import {
   REWARD_TOKEN_ADDRESSES,
+  STAKE_CONTRACT_ABI,
   STAKE_CONTRACT_ADDRESSES,
   STAKE_TOKEN_ADDRESSES,
 } from "../cost/addresses";
@@ -27,6 +28,7 @@ import { ethers } from "ethers";
 
 export default function Stake() {
   const address = useAddress();
+  let errorMessage = ""
 
   const { contract: stakeTokenContract } = useContract(
     STAKE_TOKEN_ADDRESSES,
@@ -37,9 +39,11 @@ export default function Stake() {
     "token"
   );
   const { contract: stakeContract } = useContract(
-    STAKE_CONTRACT_ADDRESSES,
-    "custom"
+    STAKE_CONTRACT_ADDRESSES,STAKE_CONTRACT_ABI
   );
+  // console.log("stakeContract",stakeContract);
+
+ 
 
   const {
     data: stakeInfo,
@@ -95,11 +99,23 @@ export default function Stake() {
                 type="number"
                 max={stakeTokenBalance?.displayValue}
                 value={stakeAmount}
-                onChange={(e) => setStakeAmount(e.target.value)}
+                onChange={(e:any) => setStakeAmount(e.target.value)}
               />
-              <Web3Button
+              <Web3Button 
                 contractAddress={STAKE_CONTRACT_ADDRESSES}
                 action={async (contract) => {
+                  // console.log(contract);
+                  if (Number(stakeAmount)<=0) {
+                    // toast({
+                    //   title: "Please enter a valid amount",
+                    //   status: "error",
+                    //   duration: 5000,
+                    //   isClosable: true,
+                    // })
+                    errorMessage="Please enter a valid amount"
+                    throw new Error("Please enter a valid amount");
+                  }
+                  
                   await stakeTokenContract?.erc20.setAllowance(
                     STAKE_CONTRACT_ADDRESSES,
                     stakeAmount
@@ -118,6 +134,17 @@ export default function Stake() {
                     isClosable: true,
                   })
                 }
+                onError={(err:any) =>{
+                  // console.log("onError",err.reason);
+                  
+                  toast({
+                    title: err.reason || errorMessage,
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                  })
+                  errorMessage=""
+                }}
               >
                 Stake
               </Web3Button>
@@ -126,11 +153,13 @@ export default function Stake() {
               <Input
                 type="number"
                 value={unstakeAmount}
-                onChange={(e) => setUnstakeAmount(e.target.value)}
+                onChange={(e:any) => setUnstakeAmount(e.target.value)}
               />
               <Web3Button
                 contractAddress={STAKE_CONTRACT_ADDRESSES}
                 action={async (contract) => {
+                  // console.log(contract);
+
                   await contract.call("withdraw", [
                     ethers.utils.parseEther(unstakeAmount),
                   ]);
@@ -143,6 +172,16 @@ export default function Stake() {
                     isClosable: true,
                   })
                 }
+                onError={(err:any) =>{
+                  // console.log("onError",err.reason);
+                  
+                  toast({
+                    title: err.reason,
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                  })
+                }}
               >
                 Unstake
               </Web3Button>
@@ -176,6 +215,8 @@ export default function Stake() {
             <Web3Button
               contractAddress={STAKE_CONTRACT_ADDRESSES}
               action={async (contract) => {
+                // console.log(contract);
+
                 await contract.call("claimRewards");
                 resetValue();
               }}
@@ -187,6 +228,16 @@ export default function Stake() {
                   isClosable: true,
                 })
               }
+              onError={(err:any) =>{
+                // console.log("onError",err.reason);
+                
+                toast({
+                  title: err.reason,
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                })
+              }}
             >
               Claim
             </Web3Button>
