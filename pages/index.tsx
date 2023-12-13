@@ -3,7 +3,7 @@ import { Container, Flex, Heading, SimpleGrid } from "@chakra-ui/react";
 import { useAddress } from "@thirdweb-dev/react";
 import StakeToken from "../components/StakeToken";
 import RewardToken from "../components/RewardToken";
-import Stake from "../components/Stake";
+import Farm1 from "../components/Farm1";
 
 const Home: NextPage = () => {
   const address = useAddress();
@@ -24,7 +24,7 @@ const Home: NextPage = () => {
         <StakeToken />
         <RewardToken />
       </SimpleGrid>
-      <Stake />
+      <Farm1 />
     </Container>
   );
 };

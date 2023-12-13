@@ -15,33 +15,41 @@ import {
   useAddress,
   useContract,
   useContractRead,
+  useMetadata,
   useTokenBalance,
 } from "@thirdweb-dev/react";
 import {
-  REWARD_TOKEN_ADDRESSES,
-  STAKE_CONTRACT_ABI,
-  STAKE_CONTRACT_ADDRESSES,
-  STAKE_TOKEN_ADDRESSES,
+  BANANA_TOKEN_ADDRESSES,
+  STAKE_CONTRACT_ABI_1,
+  STAKE_CONTRACT_ADDRESSES_1,
+  APPLE_TOKEN_ADDRESSES,
 } from "../cost/addresses";
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 
-export default function Stake() {
+export default function Farm1() {
   const address = useAddress();
-  let errorMessage = ""
 
   const { contract: stakeTokenContract } = useContract(
-    STAKE_TOKEN_ADDRESSES,
+    APPLE_TOKEN_ADDRESSES,
     "token"
   );
   const { contract: rewardTokenContract } = useContract(
-    REWARD_TOKEN_ADDRESSES,
+    BANANA_TOKEN_ADDRESSES,
     "token"
   );
   const { contract: stakeContract } = useContract(
-    STAKE_CONTRACT_ADDRESSES,STAKE_CONTRACT_ABI
+    STAKE_CONTRACT_ADDRESSES_1,"custom"
   );
   // console.log("stakeContract",stakeContract);
+
+  const { data:MetaData, isLoading:MetaDataLoading, error }: any = useMetadata(stakeContract);
+  // useEffect(() => {
+  //   console.log("MetaData",MetaData);
+    
+  
+    
+  // }, [MetaData])
 
  
 
@@ -75,7 +83,17 @@ export default function Stake() {
 
   return (
     <Card p={5} mt={10}>
-      <Heading>Earn Reward Token</Heading>
+      <Skeleton h={10} w={"100%"} isLoaded={!MetaDataLoading}>
+    {
+        MetaData?
+        <Box display="Flex">
+        <Heading> {MetaData?.name} {`Apple to Banana`} </Heading>
+        <img src={MetaData?.image} alt=""  height={75} width={100} style={{borderRadius:"10px",margin:"0 20px"}}/>
+        </Box>
+
+        :null
+    }
+</Skeleton>
       <SimpleGrid columns={2}>
         <Card p={5} m={5}>
           <Box textAlign={"center"} mb={5}>
@@ -102,7 +120,7 @@ export default function Stake() {
                 onChange={(e:any) => setStakeAmount(e.target.value)}
               />
               <Web3Button 
-                contractAddress={STAKE_CONTRACT_ADDRESSES}
+                contractAddress={STAKE_CONTRACT_ADDRESSES_1}
                 action={async (contract) => {
                   // console.log(contract);
                   if (Number(stakeAmount)<=0) {
@@ -112,12 +130,12 @@ export default function Stake() {
                     //   duration: 5000,
                     //   isClosable: true,
                     // })
-                    errorMessage="Please enter a valid amount"
-                    throw new Error("Please enter a valid amount");
+                    // throw new Error("Please enter a valid amount");
+                    throw Error("Please enter a valid amount thro");
                   }
                   
                   await stakeTokenContract?.erc20.setAllowance(
-                    STAKE_CONTRACT_ADDRESSES,
+                    STAKE_CONTRACT_ADDRESSES_1,
                     stakeAmount
                   );
 
@@ -138,12 +156,11 @@ export default function Stake() {
                   // console.log("onError",err.reason);
                   
                   toast({
-                    title: err.reason || errorMessage,
+                    title:err.reason ||err.message,
                     status: "error",
                     duration: 5000,
                     isClosable: true,
                   })
-                  errorMessage=""
                 }}
               >
                 Stake
@@ -156,7 +173,7 @@ export default function Stake() {
                 onChange={(e:any) => setUnstakeAmount(e.target.value)}
               />
               <Web3Button
-                contractAddress={STAKE_CONTRACT_ADDRESSES}
+                contractAddress={STAKE_CONTRACT_ADDRESSES_1}
                 action={async (contract) => {
                   // console.log(contract);
 
@@ -213,7 +230,7 @@ export default function Stake() {
               )}
             </Skeleton>
             <Web3Button
-              contractAddress={STAKE_CONTRACT_ADDRESSES}
+              contractAddress={STAKE_CONTRACT_ADDRESSES_1}
               action={async (contract) => {
                 // console.log(contract);
 

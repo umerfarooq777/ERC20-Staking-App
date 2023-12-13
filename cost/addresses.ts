@@ -1,11 +1,11 @@
-export const STAKE_TOKEN_ADDRESSES = "0x4CA5c098B6AdEFe857d65008D8e47C7A9Aa03015"; //apple
+export const APPLE_TOKEN_ADDRESSES = "0x4CA5c098B6AdEFe857d65008D8e47C7A9Aa03015"; //apple
 
-export const REWARD_TOKEN_ADDRESSES = "0x66FBeeCA3Ec5644148c824f010A988fFE1F40d4A"; // banana
+export const BANANA_TOKEN_ADDRESSES = "0x66FBeeCA3Ec5644148c824f010A988fFE1F40d4A"; // banana
 
-export const STAKE_CONTRACT_ADDRESSES = "0x9e6a0b3Ca375d9948492B5Cda6C41d1Dc0e7cD68"; //farm
+export const STAKE_CONTRACT_ADDRESSES_1 = "0x9e6a0b3Ca375d9948492B5Cda6C41d1Dc0e7cD68"; //farm
 
 
-export const STAKE_CONTRACT_ABI = [
+export const STAKE_CONTRACT_ABI_1 = [
     {
       "type": "constructor",
       "name": "",
