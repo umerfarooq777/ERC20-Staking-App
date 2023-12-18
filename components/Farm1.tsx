@@ -58,6 +58,7 @@ export default function Farm1() {
     refetch: refetchStakeInfo,
     isLoading: loadingStakeInfo,
   } = useContractRead(stakeContract, "getStakeInfo", [address]);
+  
 
   const { data: stakeTokenBalance, isLoading: loadingStakeTokenBalance } =
     useTokenBalance(stakeTokenContract, address);
